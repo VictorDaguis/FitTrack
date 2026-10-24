@@ -76,17 +76,6 @@ FitTrack_Entrega2/
         └── SupportScreens.js
 ```
 
-## Checklist da Entrega 2
-
-- [ ] Instalar dependências e abrir no Expo sem erros.
-- [ ] Testar todas as abas e itens do menu lateral.
-- [ ] Testar o long-press e a saída rápida em celular/emulador.
-- [ ] Cada integrante revisar o arquivo, entender e testar as telas/código sob sua responsabilidade.
-- [ ] Atualizar `USO_IA.md` com as ferramentas/prompts usados e a revisão real feita pelo grupo.
-- [ ] Fazer commits individuais e descritivos no repositório GitHub.
-- [ ] Mover cards no Kanban para refletir o estado real (não marcar tarefa não testada como concluída).
-- [ ] Não anexar a pasta `node_modules` ao GitHub.
-
 ## Responsabilidades inicialmente planejadas
 
 - **Anderson Silva:** Treinos.
