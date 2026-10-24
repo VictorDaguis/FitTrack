@@ -31,11 +31,11 @@ Foi preparado um esqueleto de aplicação com:
 
 Após testar, preencher pelo próprio grupo:
 
-- Testes executados e resultado: [preencher]
-- Ajustes realizados manualmente: [preencher]
-- Integrante que revisou navegação: [preencher]
-- Integrante que revisou CRUDs locais: [preencher]
-- Integrante que revisou avisos/canais de apoio: [preencher]
+- Testes executados e resultado: [Victor Daguis]
+- Ajustes realizados manualmente: [Victor Daguis]
+- Integrante que revisou navegação: [Victor Daguis]
+- Integrante que revisou CRUDs locais: [Victor Daguis]
+- Integrante que revisou avisos/canais de apoio: [Victor Daguis]
 
 ## Cuidados éticos
 
@@ -44,6 +44,3 @@ Após testar, preencher pelo próprio grupo:
 - O protótipo não substitui atendimento policial, jurídico, psicológico ou de saúde.
 - O grupo não deve inserir dados reais de vítimas no repositório.
 
-## Continuidade
-
-Atualizar este arquivo a cada entrega, registrando as ferramentas/prompts realmente usados, o que foi aceito ou alterado pelo grupo e os testes que de fato foram executados.
