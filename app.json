@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "FitTrack",
+    "slug": "fittrack-entrega2",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#F4F7FB"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#244D82"
+      }
+    }
+  }
+}
