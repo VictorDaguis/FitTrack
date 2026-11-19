@@ -1,85 +1,158 @@
-# FitTrack — Entrega 2 (Desenvolvimento Móvel)
+# FitTrack — Entrega Final 3 e 4 (2026.2)
 
-**Grupo:** Anderson Silva, Gabriel Magro e Victor Hugo Daguis  
-**Tema acadêmico:** aplicativo de apoio camuflado em uma fachada de academia.  
-**Estado deste pacote:** primeira versão navegável, com dados simulados em memória. A execução/teste em aparelho ou emulador ainda deve ser feita pelo grupo.
+**Equipe de 4 integrantes:** **Anderson Silva, Gabriel Magro, Victor Hugo Daguis e Luhan**.  
+**Disciplina:** Desenvolvimento Móvel. **Data Science:** não se aplica aos integrantes originalmente informados; confirmar se Luhan também não cursa a disciplina.  
+**Tema:** protótipo acadêmico de apoio camuflado sob a aparência de aplicativo de academia.
 
-## O que já está implementado
+> **Somente demonstração acadêmica.** Sem autenticação ou proteção adequadas para dados sensíveis. **Não inserir dados reais de vítimas.** SOS fictício: não avisa contatos, polícia ou serviços públicos. Ligue 180 para orientação ou 190 em emergências reais.
 
-- Fachada de academia com início, treino destacado, progresso e histórico demonstrativo.
-- Navegação por abas (Início, Treinos, Exercícios e Histórico).
-- Gatilho secreto: manter pressionado o botão **INICIAR TREINO** por aproximadamente 3 segundos abre a área de apoio.
-- Área de apoio em Drawer: central de apoio, contatos de confiança, ocorrências, pontos de apoio, SOS e sobre o projeto.
-- Navegação por Stack entre a fachada e a área de apoio.
-- Dados demonstrativos em estado React, sem API ou banco de dados.
-- CRUD local demonstrativo de treinos, exercícios, contatos e ocorrências: criar, listar, editar e excluir enquanto a aplicação está aberta.
-- Relacionamento local entre exercícios e treinos por `workoutId`.
-- Saída rápida para retornar à fachada.
-- Canais 180 e 190 visíveis e aviso de que o app é um protótipo acadêmico.
-- Arquivo `USO_IA.md` inicializado para registrar o apoio de IA.
+## 1. O que existe neste projeto
 
-## Como executar
+- **Expo SDK 58 / React Native:** fachada fitness com abas Início, Treinos, Exercícios e Resumo.
+- **Gatilho de acesso:** toque normal em **INICIAR TREINO** abre treinos; segurar ~3 segundos abre a área de apoio.
+- **Saída rápida:** comando na área de apoio redefine a navegação e retorna à fachada (não é mecanismo de privacidade real).
+- **Quatro CRUDs REST completos**, cada um com sua tabela SQLite e interface mobile consumindo requisições reais, sem `mockData` no React Native.
+- **API Node.js/Express:** em `api/`, inicializável localmente por `npm install` e `npm start`.
+- **Persistência SQLite real:** módulo nativo `node:sqlite` com Node 22.16+ (Node 24 recomendado).
+- **Relacionamento real:** exercícios pertencem a treinos, com FK `exercises.workout_id → workouts.id` e exclusão em cascata. IDs inválidos retornam HTTP 422.
+- **Painel web** em `/painel` para alertas SOS *demonstrativos* com localização autorizada, sem contato com autoridades.
 
-> Use a pasta `FitTrack_Entrega2` deste pacote. **Não use a pasta `__MACOSX`** que aparece em alguns ZIPs: ela contém metadados do macOS, e não os arquivos-fonte do aplicativo.
+## 2. Matriz dos quatro CRUDs
 
-1. Instale uma versão atual do Node.js compatível com o Expo SDK do projeto.
-2. Extraia este ZIP para uma pasta normal do computador.
-3. Abra um terminal dentro da pasta `FitTrack_Entrega2`.
-4. Instale as dependências:
+| Integrante | CRUD | Tela | Rota da API | Tabela SQLite |
+|---|---|---|---|---|
+| **Anderson Silva** | Treinos | Treinos | `/api/workouts` | `workouts` |
+| **Gabriel Magro** | Exercícios | Exercícios | `/api/exercises` | `exercises` |
+| **Victor Hugo Daguis** | Contatos de confiança | Contatos (área de apoio) | `/api/contacts` | `contacts` |
+| **Luhan** | Ocorrências | Ocorrências (área de apoio) | `/api/incidents` | `incidents` |
 
-   ```bash
-   npm install
-   npx expo install --fix
-   ```
+Todos os quatro módulos implementam **GET lista, GET por ID, POST, PUT por ID e DELETE por ID**. Os dados criados pela interface são persistidos no SQLite e consultados novamente pela API. O CRUD de Ocorrências já existia na versão base; nesta atualização foi atribuído formalmente a Luhan e teve documentação e testes ampliados.
 
-5. Inicie o Expo:
+Consulte `docs/MATRIZ_RESPONSABILIDADES.md`, `docs/DER.md` e `docs/ROTEIRO_APRESENTACAO.md`.
 
-   ```bash
-   npx expo start
-   ```
+## 3. Requisitos e execução
 
-6. Abra pelo Expo Go em um celular compatível ou execute no emulador. O terminal exibirá um QR Code e os atalhos disponíveis.
+- Node **24.x LTS** recomendado (Node >=22.16.0 requerido pela API).
+- npm e Expo Go compatível com o SDK instalado, ou emulador Android/iOS.
+- Computador com API e celular na mesma rede ou rota segura alternativa; não publicar API sem autenticação na internet.
 
-Se aparecer algum aviso de dependências, rode `npx expo-doctor` e siga a sugestão de compatibilidade do SDK.
+### Terminal 1 — API e banco SQLite
 
-## Como demonstrar o disfarce
+```powershell
+cd "C:\CAMINHO\FitTrackpi"
+npm install
+npm start
+```
 
-1. Abra o app: a primeira tela é o FitTrack, com aparência de aplicativo de academia.
-2. Toque normalmente em **INICIAR TREINO** para abrir a lista de treinos.
-3. Volte ao início e mantenha **INICIAR TREINO** pressionado por cerca de 3 segundos.
-4. O aplicativo abre a Central de Apoio.
-5. Demonstre as telas do Drawer e o cadastro/edição/exclusão dos dados fictícios.
-6. Use **SAÍDA RÁPIDA** para retornar à fachada.
+- Verificação: `http://localhost:3333/api/health`
+- Painel fictício: `http://localhost:3333/painel`
+- SQLite: `api/data/fittrack.sqlite` (gerado na inicialização, **não incluído no ZIP/GitHub**).
 
-## Limites desta etapa
+### Terminal 2 — Expo
 
-- Os dados são mockados e ficam somente em memória; podem voltar ao estado inicial ao recarregar o aplicativo.
-- Ainda não há API, autenticação real, banco de dados, envio de SOS ou painel de atendimento integrado. A integração com API é uma etapa posterior.
-- O botão “Simular acionamento” **não envia um alerta real**. Os botões de 180/190 tentam abrir o discador do aparelho.
-- Os contatos e registros iniciais são fictícios. Não insiram dados reais de vítimas.
+```powershell
+cd "C:\CAMINHO\FitTrack"
+Copy-Item .env.example .env
+notepad .env
+npm install
+npx expo start --clear
+```
 
-## Organização
+No `.env`, preencher o **IP local do PC que está executando a API**, por exemplo:
+
+```dotenv
+EXPO_PUBLIC_API_URL=http://192.168.1.10:3333
+```
+
+O IP acima é **exemplo**, não valor universal. Para descobrir o seu, use `ipconfig` ou `Get-NetIPConfiguration`. Teste `http://IP-DO-PC:3333/api/health` no navegador **do celular** antes do Expo.
+
+Caso o Metro não carregue pela LAN, em vez do último comando use:
+
+```powershell
+npx expo start --tunnel --clear
+```
+
+**Importante:** `--tunnel` expõe o Metro/Expo, **não a API**. A variável `EXPO_PUBLIC_API_URL` ainda precisa apontar para um servidor acessível pelo celular. No emulador Android padrão, geralmente use `http://10.0.2.2:3333`.
+
+Se já existe `.env` funcional em outro projeto/pasta, **preserve-o**: não substitua pelo IP de exemplo ao atualizar a versão. Um endereço LAN testado na rede em 19/11/2026 foi `10.164.48.113:3333`, mas pode mudar de rede para rede.
+
+## 4. Testes
+
+Com a API rodando, no diretório `api` em **outro terminal**:
+
+```powershell
+npm test
+npm run smoke
+```
+
+- `npm test`: banco SQLite, relacionamento e tabela de ocorrências.
+- `npm run smoke`: endpoints HTTP de todos os quatro CRUDs, GET por ID, POST/PUT/DELETE, FK inválida (422), gravidade de ocorrência inválida (422), painel e SOS de teste.
+- O script registra um evento SOS **fictício** usando coordenadas (0,0). Não aciona serviços reais.
+- `docs/TESTES_FINAIS.md` diferencia evidências já obtidas dos testes ainda necessários; não marcar testes não executados.
+
+## 5. Roteiro resumido para a apresentação
+
+1. **Anderson:** CRUD Treinos na aba, gravando na API.
+2. **Gabriel:** CRUD Exercícios e escolha de um treino existente, demonstrando FK real.
+3. Mostrar fachada e manter **INICIAR TREINO** pressionado ~3 segundos.
+4. **Victor:** CRUD Contatos de confiança na área de apoio.
+5. **Luhan:** CRUD Ocorrências — registrar ocorrência **fictícia** com data, tipo, descrição e gravidade, atualizar e excluir, usando `/api/incidents`.
+6. Demonstrar SAÍDA RÁPIDA; opcionalmente SOS fictício e painel de alertas.
+
+Detalhes em `docs/ROTEIRO_APRESENTACAO.md`.
+
+## 6. Rotas e códigos HTTP
+
+Para cada um dos recursos `workouts`, `exercises`, `contacts`, `incidents`:
 
 ```text
-FitTrack_Entrega2/
+GET    /api/RECURSO
+GET    /api/RECURSO/:id
+POST   /api/RECURSO
+PUT    /api/RECURSO/:id
+DELETE /api/RECURSO/:id
+```
+
+Outros: `GET /api/health`, `GET /api/profiles/1`, `GET/POST /api/alerts`, `PATCH /api/alerts/:id/status`, `GET /painel`. Status típicos `200`, `201`, `204`, `400`, `404`, `422` e `500`.
+
+## 7. Arquivos
+
+```text
+FitTrack/
 ├── App.js
 ├── app.json
 ├── package.json
+├── .env.example
+├── src/
+│   ├── navigation/AppNavigator.js
+│   ├── context/AppContext.js  # carrega os quatro recursos da API
+│   ├── services/api.js
+│   ├── screens/FitnessScreens.js
+│   ├── screens/SupportScreens.js  # contatos e ocorrências
+│   └── components/UI.js
+├── api/
+│   ├── server.js  # quatro CRUDs, SOS e painel
+│   ├── db.js      # tabelas SQLite e FK
+│   ├── public/index.html
+│   └── tests/
+├── docs/
+│   ├── MATRIZ_RESPONSABILIDADES.md
+│   ├── DER.md
+│   ├── ROTEIRO_APRESENTACAO.md
+│   ├── TESTES_FINAIS.md
+│   ├── TESTE_LUHAN_POWERSHELL.ps1
+│   └── ENTREGA_BLACKBOARD.md
 ├── USO_IA.md
-└── src/
-    ├── components/UI.js
-    ├── context/AppContext.js
-    ├── data/initialData.js
-    ├── navigation/AppNavigator.js
-    └── screens/
-        ├── FitnessScreens.js
-        └── SupportScreens.js
+└── README.md
 ```
 
-## Responsabilidades inicialmente planejadas
+## 8. Segurança e integridade acadêmica
 
-- **Anderson Silva:** Treinos.
-- **Gabriel Magro:** Exercícios e relacionamento com Treinos.
-- **Victor Hugo Daguis:** Contatos de confiança.
+- O projeto é destinado **somente a testes com dados inventados**. A API de demonstração não possui autenticação nem isolamento de usuários e não deve ficar publicada em rede aberta.
+- `.gitignore` exclui `.env`, `node_modules` e `api/data/*.sqlite`; não enviar dados pessoais, tokens ou chaves.
+- O painel simula atendimentos, não é vinculado a serviços oficiais. A saída rápida reduz navegação acidental, mas não apaga histórico do dispositivo ou garante sigilo.
+- Os **quatro estudantes** devem revisar seus módulos e realizar **commits próprios de contribuições reais**; não atribuir autoria fictícia. Preencher o `USO_IA.md` e atualizar o Trello.
 
-A divisão acima retoma o planejamento inicial. O grupo deve ajustar a atribuição conforme a contribuição efetivamente realizada por cada integrante e manter commits individuais.
+## 9. Entrega ao Blackboard
+
+Prazo fornecido: **19/11/2026, 23h59**. Entregar **link do repositório atualizado**, ZIP Expo e ZIP API separados, cópia do `USO_IA.md` e **imagem/PDF do Kanban real atualizado**. A atividade não exige notebook de Data Science de quem não cursa essa disciplina. Consulte `docs/ENTREGA_BLACKBOARD.md`.
