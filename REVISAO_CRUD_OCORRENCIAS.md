@@ -1,7 +1,7 @@
 # Revisão do CRUD de Ocorrências
 
 ## Responsável
-Luhan
+Luhan Marques
 
 ## Funcionalidades analisadas
 
