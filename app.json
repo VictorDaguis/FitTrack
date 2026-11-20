@@ -1,18 +1,26 @@
 {
   "expo": {
     "name": "FitTrack",
-    "slug": "fittrack-entrega2",
+    "slug": "fittrack",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "backgroundColor": "#F4F7FB"
-    },
     "android": {
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#244D82"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Usamos a localização somente em alertas acadêmicos de demonstração, quando você autorizar."
+        }
+      ]
+    ]
   }
 }

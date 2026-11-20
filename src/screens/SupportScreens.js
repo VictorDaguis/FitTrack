@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
+import * as Location from 'expo-location';
 import { Alert, Linking, Pressable, Text, View } from 'react-native';
 import { useAppData } from '../context/AppContext';
 import { Card, COLORS, EmptyState, Field, FormModal, Pill, PrimaryButton, Screen, SectionTitle, SecondaryAction } from '../components/UI';
 
 function navigateToRootRoute(navigation, routeName) {
-  let current = navigation;
-  while (current) {
-    const state = current.getState?.();
-    if (state?.routeNames?.includes(routeName)) {
-      current.navigate(routeName);
-      return;
-    }
-    current = current.getParent?.();
-  }
-  Alert.alert('Navegação', 'Não foi possível retornar à tela principal.');
+  let root = navigation;
+  while (root.getParent?.()) root = root.getParent();
+  root.reset({ index: 0, routes: [{ name: routeName }] });
 }
 
 function QuickExit({ navigation }) {
@@ -82,15 +76,17 @@ export function ContactsScreen({ navigation }) {
     setPriority(String(contact?.priority || '1'));
     setVisible(true);
   };
-  const save = () => {
+  const save = async () => {
     if (!name.trim() || !phone.trim()) return Alert.alert('Campos obrigatórios', 'Informe pelo menos o nome e o telefone.');
     const data = { name: name.trim(), relation: relation.trim() || 'Não informada', phone: phone.trim(), priority: String(Math.max(1, Math.min(5, Number(priority) || 1))) };
-    if (editing) updateContact(editing.id, data); else addContact(data);
-    setVisible(false);
+    try {
+      if (editing) await updateContact(editing.id, data); else await addContact(data);
+      setVisible(false);
+    } catch (err) { Alert.alert('Erro ao salvar contato na API', err.message); }
   };
   const confirmDelete = (contact) => Alert.alert('Excluir contato?', `Deseja remover ${contact.name} dos dados simulados?`, [
     { text: 'Cancelar', style: 'cancel' },
-    { text: 'Excluir', style: 'destructive', onPress: () => deleteContact(contact.id) },
+    { text: 'Excluir', style: 'destructive', onPress: async () => { try { await deleteContact(contact.id); } catch(err) { Alert.alert('Erro ao excluir contato', err.message); } } },
   ]);
 
   return (
@@ -128,34 +124,37 @@ export function IncidentsScreen({ navigation }) {
   const { incidents, addIncident, updateIncident, deleteIncident } = useAppData();
   const [visible, setVisible] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [date, setDate] = useState('24/10/2026');
+  const [date, setDate] = useState(new Date().toLocaleDateString('pt-BR'));
   const [type, setType] = useState('');
   const [description, setDescription] = useState('');
   const [severity, setSeverity] = useState('1');
 
   const openForm = (incident = null) => {
     setEditing(incident);
-    setDate(incident?.date || '24/10/2026');
+    setDate(incident?.date || new Date().toLocaleDateString('pt-BR'));
     setType(incident?.type || '');
     setDescription(incident?.description || '');
     setSeverity(String(incident?.severity || '1'));
     setVisible(true);
   };
-  const save = () => {
+  const save = async () => {
     if (!type.trim() || !description.trim()) return Alert.alert('Campos obrigatórios', 'Informe o tipo e a descrição do registro.');
     const data = { date: date.trim() || 'Data não informada', type: type.trim(), description: description.trim(), severity: String(Math.max(1, Math.min(5, Number(severity) || 1))) };
-    if (editing) updateIncident(editing.id, data); else addIncident(data);
-    setVisible(false);
+    try {
+      if (editing) await updateIncident(editing.id, data); else await addIncident(data);
+      setVisible(false);
+    } catch (err) { Alert.alert('Erro ao salvar ocorrência na API', err.message); }
   };
-  const confirmDelete = (incident) => Alert.alert('Excluir registro?', 'Este registro fictício será removido da lista.', [
+  const confirmDelete = (incident) => Alert.alert('Excluir registro?', 'Este registro de demonstração será removido do banco de dados.', [
     { text: 'Cancelar', style: 'cancel' },
-    { text: 'Excluir', style: 'destructive', onPress: () => deleteIncident(incident.id) },
+    { text: 'Excluir', style: 'destructive', onPress: async () => { try { await deleteIncident(incident.id); } catch(err) { Alert.alert('Erro ao excluir ocorrência', err.message); } } },
   ]);
 
   return (
     <Screen support>
       <Text style={{ color: COLORS.green, fontSize: 22, fontWeight: '900' }}>Ocorrências</Text>
-      <Text style={{ color: COLORS.muted, fontSize: 13 }}>Registro discreto • exemplos inteiramente fictícios.</Text>
+      <Text style={{ color: COLORS.muted, fontSize: 13 }}>CRUD de ocorrências: registros persistidos na API/SQLite, com dados exclusivamente fictícios.</Text>
+      <Text style={{ color: COLORS.muted, fontSize: 12 }}>{incidents.length} ocorrência(s) carregada(s) do servidor</Text>
       <PrimaryButton title="+ NOVA OCORRÊNCIA" tone="green" onPress={() => openForm()} />
       {incidents.length === 0 ? <EmptyState text="Não há registros. Use o botão acima para criar um registro de demonstração." /> : incidents.map((incident) => (
         <Card key={incident.id} style={{ borderColor: '#E0E5ED' }}>
@@ -208,22 +207,36 @@ export function SupportPointsScreen({ navigation }) {
 }
 
 export function SOSScreen({ navigation }) {
+  const { sendDemoAlert } = useAppData();
+  const [submitting, setSubmitting] = useState(false);
   const tryCall = async (number) => {
+    try { await Linking.openURL(`tel:${number}`); }
+    catch { Alert.alert('Telefone', `Use o discador do aparelho para ligar para ${number}.`); }
+  };
+  const sendAlert = async () => {
+    if (submitting) return;
+    setSubmitting(true);
     try {
-      await Linking.openURL(`tel:${number}`);
-    } catch (error) {
-      Alert.alert('Não foi possível abrir o telefone', `Você pode ligar para ${number} pelo aplicativo de telefone do aparelho.`);
-    }
+      const permission = await Location.requestForegroundPermissionsAsync();
+      if (permission.status !== 'granted') {
+        Alert.alert('Permissão necessária', 'Para a demonstração, autorize a localização do aparelho de testes. Nenhum dado é enviado à polícia.');
+        return;
+      }
+      const position = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+      const result = await sendDemoAlert({ latitude: position.coords.latitude, longitude: position.coords.longitude });
+      Alert.alert('Alerta acadêmico registrado', `Evento #${result.id} enviado apenas à API local. Visualize em http://SEU-IP:3333/painel. Nenhuma autoridade foi notificada.`);
+    } catch (err) { Alert.alert('Falha na simulação', err.message); }
+    finally { setSubmitting(false); }
   };
   return (
     <Screen support>
-      <Text style={{ color: COLORS.green, fontSize: 22, fontWeight: '900' }}>SOS</Text>
-      <Text style={{ color: COLORS.muted, fontSize: 13 }}>Este protótipo não envia alertas reais.</Text>
+      <Text style={{ color: COLORS.green, fontSize: 22, fontWeight: '900' }}>SOS — Demonstração</Text>
+      <Text style={{ color: COLORS.muted, fontSize: 13 }}>Este protótipo não oferece atendimento real.</Text>
       <View style={{ marginTop: 14, borderRadius: 22, padding: 24, backgroundColor: COLORS.paleRed, borderColor: '#F0C2C2', borderWidth: 1, alignItems: 'center', gap: 12 }}>
         <Text style={{ color: COLORS.red, fontSize: 50, fontWeight: '900' }}>SOS</Text>
-        <Text style={{ color: COLORS.text, fontWeight: '800', textAlign: 'center' }}>Solicitar ajuda</Text>
-        <Text style={{ color: COLORS.muted, fontSize: 12, textAlign: 'center', lineHeight: 18 }}>Na entrega atual, o botão apenas demonstra o fluxo. Nenhum contato ou serviço será notificado pelo aplicativo.</Text>
-        <PrimaryButton title="SIMULAR ACIONAMENTO" tone="red" onPress={() => Alert.alert('Simulação concluída', 'Nenhum alerta real foi enviado. Para emergências, ligue 190. Para atendimento à mulher, ligue 180.')} style={{ width: '100%' }} />
+        <Text style={{ color: COLORS.text, fontWeight: '800', textAlign: 'center' }}>Acionamento simulado para a banca</Text>
+        <Text style={{ color: COLORS.muted, fontSize: 12, textAlign: 'center', lineHeight: 18 }}>Ao autorizar, envia data, hora e coordenadas do aparelho de testes para o painel local do projeto. Não envie dados reais de vítimas. Nenhum contato, polícia ou serviço oficial é avisado.</Text>
+        <PrimaryButton title={submitting ? 'REGISTRANDO...' : 'ENVIAR ALERTA DE DEMONSTRAÇÃO'} tone="red" onPress={sendAlert} style={{ width: '100%' }} />
       </View>
       <PrimaryButton title="LIGAR PARA 180 — ATENDIMENTO À MULHER" tone="green" onPress={() => tryCall('180')} />
       <PrimaryButton title="LIGAR PARA 190 — EMERGÊNCIA" tone="red" onPress={() => tryCall('190')} />
