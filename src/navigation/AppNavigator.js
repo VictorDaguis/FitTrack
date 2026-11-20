@@ -68,7 +68,7 @@ function SupportDrawer() {
 
 export default function AppNavigator() {
   return (
-    <RootStack.Navigator initialRouteName="Fitness" screenOptions={{ headerShown: false, animation: 'fade' }}>
+    <RootStack.Navigator initialRouteName="Fitness" screenOptions={{ headerShown: false, animation: 'fade', gestureEnabled: false }}>
       <RootStack.Screen name="Fitness" component={FitnessTabs} />
       <RootStack.Screen name="Support" component={SupportDrawer} />
     </RootStack.Navigator>

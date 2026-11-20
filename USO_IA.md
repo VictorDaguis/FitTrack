@@ -1,46 +1,52 @@
-# Uso de Inteligência Artificial — FitTrack
+# USO_IA.md — FitTrack, Entrega Final (3 e 4)
 
-## Projeto
-Projeto Integrador — Desenvolvimento Móvel, 2º semestre de 2026. Fachada de academia com área de apoio camuflada. Integrantes: Anderson Silva, Gabriel Magro e Victor Hugo Daguis.
+**Equipe de quatro integrantes:** Anderson Silva, Gabriel Magro, Victor Hugo Daguis e Luhan.  
+**Disciplina:** Desenvolvimento Móvel, segundo semestre de 2026.  
+**Tema:** aplicativo de apoio acadêmico camuflado como academia.
 
-## Ferramentas utilizadas nesta etapa
+## Ferramenta utilizada e finalidade
 
-| Ferramenta | Parte apoiada | Responsável por revisar |
+**ChatGPT (OpenAI):** apoio ao planejamento, documentação, estrutura de navegação Expo/React Native, integração com API REST Express/SQLite, exemplos de validações e testes automatizados. A IA **não substitui a revisão, implementação, testes, entendimento técnico ou a autoria real de cada estudante**.
+
+| Etapa | Apoio recebido | O que o grupo deve validar |
 |---|---|---|
-| ChatGPT | Esboço da estrutura Expo/React Native, navegação Stack/Tab/Drawer, telas, componentes visuais e dados demonstrativos em memória. | Grupo FitTrack — revisão e testes pendentes até que sejam concluídos. |
+| Entregas 1 e 2 | Definição do disfarce FitTrack, telas, navegação Stack/Tabs/Drawer e primeiro protótipo com dados locais | Gatilho oculto e transição de telas |
+| Entrega Final | API REST, banco SQLite, `workout_id` como FK, consumo de API, painel SOS fictício e documentação | Quatro CRUDs de ponta a ponta, persistência, erros HTTP, testes e segurança acadêmica |
+| Inclusão de integrante (19/11/2026) | Reorganização da matriz para **Luhan → Ocorrências**, atualização de README, DER, roteiro, testes e declaração de IA | Luhan revisar, testar e contribuir efetivamente no módulo de Ocorrências |
 
-## Prompts utilizados (resumo fiel)
+## Prompts de referência realmente usados
 
-- “Ainda sobre a Entrega 2, o nosso app, preciso fazer essa entrega”, acompanhada do enunciado da entrega e de imagens da pasta `__MACOSX` do ZIP de referência.
-- Contexto do projeto nas mensagens anteriores: aplicativo FitTrack com fachada de academia, entrada secreta por toque longo no botão “INICIAR TREINO” por cerca de 3 segundos e área protegida com contatos, ocorrências, pontos de apoio, SOS e saída rápida.
+- “Vamos fazer o da academia.”
+- “Precisamos dar sequencia nesse projeto, nao mexi mais apos nossa ultima conversa e agora tem essa outra atividade para fazermos” (acompanhado do enunciado da Entrega Final).
+- “Precisamos fazer um ajuste, um novo integrante entrou, chamado Luhan, ajuste para que fique um CRUD pra ele tambem etc. favor mandar tudo atualizado”.
 
-## Resultado produzido com apoio de IA
+## Distribuição atual dos CRUDs
 
-Foi preparado um esqueleto de aplicação com:
+- **Anderson Silva:** Treinos — `GET/POST/PUT/DELETE /api/workouts` (também GET por ID).
+- **Gabriel Magro:** Exercícios — `GET/POST/PUT/DELETE /api/exercises` (também GET por ID) e FK `workout_id`.
+- **Victor Hugo Daguis:** Contatos — `GET/POST/PUT/DELETE /api/contacts` (também GET por ID).
+- **Luhan:** Ocorrências — `GET/POST/PUT/DELETE /api/incidents` (também GET por ID, validação de gravidade 1–5).
 
-- abas para Início, Treinos, Exercícios e Histórico;
-- Drawer para a área de apoio;
-- navegação Stack entre a fachada e a área protegida;
-- listas, formulários e operações locais demonstrativas para treinos, exercícios, contatos e ocorrências;
-- dados fictícios e avisos de protótipo acadêmico;
-- documentação de execução e checklist.
+O CRUD de Ocorrências **já existia tecnicamente na base da versão anterior**; nesta atualização ele foi formalmente atribuído ao quarto integrante, recebeu documentação e testes ampliados. Não registrar que o Luhan escreveu do zero algo que já estava pronto; sua contribuição deve ser uma revisão, correção, teste ou melhoria efetivamente feita por ele.
 
-## Revisão humana e estado de validação
+## Evidências obtidas na conversa em 19/11/2026
 
-**Importante:** geração do código não significa que o aplicativo já foi validado. No momento da preparação deste arquivo, o grupo ainda precisa executar a aplicação, testar todas as telas e corrigir possíveis incompatibilidades no ambiente local. Não registrar como testado aquilo que ainda não foi executado.
+- Node **24.22.3** e `node:sqlite` responderam corretamente.
+- API iniciou em `http://localhost:3333`; health check retornou `status=ok`, `storage=sqlite`, `mode=demo`.
+- GET dos três recursos Treinos, Exercícios e Contatos respondeu; painel `/painel` respondeu HTTP 200.
+- Teste manual por PowerShell completou **Create, Read, Update e Delete dos três CRUDs originais**, rejeitando FK inexistente com HTTP 422 e removendo os registros temporários.
+- Navegador do celular acessou o `/api/health` pelo IP local; `.env` foi configurado e `npm install` da aplicação concluído.
+- **Pendente de validação:** CRUD de Ocorrências do Luhan em API/Expo; teste atualizado `npm run smoke`; abertura do novo Expo no celular; SOS e saída rápida na versão final.
 
-Após testar, preencher pelo próprio grupo:
+## Revisão humana e commits — completar com dados reais
 
-- Testes executados e resultado: [Victor Daguis]
-- Ajustes realizados manualmente: [Victor Daguis]
-- Integrante que revisou navegação: [Victor Daguis]
-- Integrante que revisou CRUDs locais: [Victor Daguis]
-- Integrante que revisou avisos/canais de apoio: [Victor Daguis]
+| Integrante | Revisão/modificação feita pessoalmente | Teste efetuado pessoalmente | Commit SHA/link |
+|---|---|---|---|
+| Anderson Silva | Pendente de registro | Pendente | Pendente |
+| Gabriel Magro | Pendente de registro | Pendente | Pendente |
+| Victor Hugo Daguis | Pendente de registro | Pendente | Pendente |
+| Luhan | Pendente de registro | Pendente | Pendente |
 
-## Cuidados éticos
+## Limitações e uso ético
 
-- Os contatos e incidentes iniciais são fictícios e usados somente para demonstrar a interface.
-- O botão de SOS está identificado como simulação e não notifica uma central.
-- O protótipo não substitui atendimento policial, jurídico, psicológico ou de saúde.
-- O grupo não deve inserir dados reais de vítimas no repositório.
-
+O sistema é um **protótipo acadêmico sem autenticação de usuários** e não deve receber informações reais de vítimas. O SOS envia **apenas demonstrações** para a API/painel do grupo; não contata serviços oficiais ou pessoas reais. O disfarce não equivale a uma proteção de privacidade em produção. O código produzido com ajuda de IA precisa ser entendido, revisado e validado pelo grupo.

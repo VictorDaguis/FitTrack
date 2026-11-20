@@ -1,6 +1,13 @@
 node_modules/
+api/node_modules/
 .expo/
 dist/
 web-build/
+coverage/
 .env
+.env.*
+!.env.example
+api/data/*.sqlite
+api/data/*.sqlite-*
 .DS_Store
+*.log
