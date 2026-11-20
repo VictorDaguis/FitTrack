@@ -1,6 +1,6 @@
 # FitTrack — Entrega 2 (Desenvolvimento Móvel)
 
-**Grupo:** Anderson Silva, Gabriel Magro e Victor Hugo Daguis  
+**Grupo:** Anderson Silva, Gabriel Magro, Victor Hugo Daguis e Luhan
 **Tema acadêmico:** aplicativo de apoio camuflado em uma fachada de academia.  
 **Estado deste pacote:** primeira versão navegável, com dados simulados em memória. A execução/teste em aparelho ou emulador ainda deve ser feita pelo grupo.
 
@@ -81,5 +81,6 @@ FitTrack_Entrega2/
 - **Anderson Silva:** Treinos.
 - **Gabriel Magro:** Exercícios e relacionamento com Treinos.
 - **Victor Hugo Daguis:** Contatos de confiança.
+- **Luhan** Ocorrências.
 
 A divisão acima retoma o planejamento inicial. O grupo deve ajustar a atribuição conforme a contribuição efetivamente realizada por cada integrante e manter commits individuais.
