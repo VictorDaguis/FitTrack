@@ -1,5 +1,8 @@
 # FitTrack — Entrega Final 3 e 4 (2026.2)
 
+**Grupo:** Anderson Silva, Gabriel Magro, Victor Hugo Daguis e Luhan
+**Tema acadêmico:** aplicativo de apoio camuflado em uma fachada de academia.  
+**Estado deste pacote:** primeira versão navegável, com dados simulados em memória. A execução/teste em aparelho ou emulador ainda deve ser feita pelo grupo.
 **Equipe de 4 integrantes:** **Anderson Silva, Gabriel Magro, Victor Hugo Daguis e Luhan**.  
 **Disciplina:** Desenvolvimento Móvel. **Data Science:** não se aplica aos integrantes originalmente informados; confirmar se Luhan também não cursa a disciplina.  
 **Tema:** protótipo acadêmico de apoio camuflado sob a aparência de aplicativo de academia.
@@ -153,6 +156,10 @@ FitTrack/
 - O painel simula atendimentos, não é vinculado a serviços oficiais. A saída rápida reduz navegação acidental, mas não apaga histórico do dispositivo ou garante sigilo.
 - Os **quatro estudantes** devem revisar seus módulos e realizar **commits próprios de contribuições reais**; não atribuir autoria fictícia. Preencher o `USO_IA.md` e atualizar o Trello.
 
+- **Anderson Silva:** Treinos.
+- **Gabriel Magro:** Exercícios e relacionamento com Treinos.
+- **Victor Hugo Daguis:** Contatos de confiança.
+- **Luhan** Ocorrências.
 ## 9. Entrega ao Blackboard
 
 Prazo fornecido: **19/11/2026, 23h59**. Entregar **link do repositório atualizado**, ZIP Expo e ZIP API separados, cópia do `USO_IA.md` e **imagem/PDF do Kanban real atualizado**. A atividade não exige notebook de Data Science de quem não cursa essa disciplina. Consulte `docs/ENTREGA_BLACKBOARD.md`.
